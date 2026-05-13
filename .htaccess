@@ -1,0 +1,55 @@
+# ===== La Maison Fashion Store — InfinityFree .htaccess =====
+
+# --- 1. บังคับใช้ PHP 8.x (ถ้า InfinityFree เปิดให้เลือก version) ---
+# ปกติ InfinityFree default เป็น PHP 7.4 — เปลี่ยนผ่าน Control Panel → PHP Configuration
+
+# --- 2. ป้องกันการเข้าถึงไฟล์สำคัญโดยตรงผ่าน URL ---
+<FilesMatch "^(config\.php|config\.local\.php|\.env|\.gitignore|README\.md|.*\.sql|.*\.bak)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# --- 2b. ป้องกันการเข้าถึง .git/ , .vscode/ , node_modules/ ---
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.vscode
+RedirectMatch 404 /node_modules
+
+# --- 3. ป้องกันการ list directory (ผู้ใช้ดูรายชื่อไฟล์ในโฟลเดอร์ไม่ได้) ---
+Options -Indexes
+
+# --- 3b. WebP / SVG MIME types (กันบาง server ไม่รู้จัก) ---
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+    AddType image/avif .avif
+</IfModule>
+
+# --- 4. ตั้ง default index ---
+DirectoryIndex index.php index.html
+
+# --- 5. กัน hotlink รูปภาพ (optional — ปลดล็อกถ้าต้องการ) ---
+# RewriteEngine On
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^https?://(www\.)?yourdomain\.infinityfreeapp\.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [F]
+
+# --- 6. Cache รูป + CSS เพื่อ load เร็วขึ้น ---
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# --- 7. Security headers ---
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# --- 8. PHP error display (ปิดในโปรดักชัน) ---
+php_flag display_errors Off
+php_flag log_errors On

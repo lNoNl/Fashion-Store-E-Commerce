@@ -1,2 +1,25 @@
+# --- ไฟล์ที่มี credentials / ห้ามขึ้น GitHub ---
 config.php
+config.local.php
 .env
+*.log
+error_log
+
+# --- User-uploaded test data (เก็บโครงสร้างโฟลเดอร์ไว้) ---
+uploads/slips/*
+!uploads/slips/.gitkeep
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Backups / dumps ---
+*.bak
+*.sql.bak
+*.sql
+
+# --- Dependencies (ถ้าใช้ Composer/npm ในอนาคต) ---
+vendor/
+node_modules/
